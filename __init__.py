@@ -26,6 +26,7 @@ class VP_DP_DEFAULT(bpy.types.Operator):
         
         bpy.context.space_data.shading.show_cavity = True
         
+        bpy.context.space_data.shading.cavity_type = 'WORLD'
         bpy.context.space_data.shading.cavity_ridge_factor = 2.5
         bpy.context.space_data.shading.cavity_valley_factor = 1
         
@@ -64,6 +65,7 @@ class VP_DP_RANDOMCOLOR(bpy.types.Operator):
         
         bpy.context.space_data.shading.show_cavity = True
         
+        bpy.context.space_data.shading.cavity_type = 'WORLD'
         bpy.context.space_data.shading.cavity_ridge_factor = 2.5
         bpy.context.space_data.shading.cavity_valley_factor = 1
         
