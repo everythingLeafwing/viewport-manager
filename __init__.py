@@ -9,7 +9,7 @@ bl_info = {
     "description": "Adds viewport presets",
     "warning": "",
     "doc_url": "",
-    "category": "Add Mesh",
+    "category": "View",
 }
 
 
