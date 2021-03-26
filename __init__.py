@@ -132,6 +132,7 @@ class VP_DP_OUTLINE(bpy.types.Operator):
         
         return {'FINISHED'}
 
+
 class ViewportPresets(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
     bl_label = "Viewport Presets"
@@ -139,7 +140,7 @@ class ViewportPresets(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Viewport presets"
-
+    
     def draw(self, context):
         layout = self.layout
         
@@ -148,6 +149,7 @@ class ViewportPresets(bpy.types.Panel):
         row.label(text= "select a viewport preset to switch to")
         
         box = layout.box()
+        box.label(text= "settings:")
         box.label(text= "basic viewports:")
         box.operator("view.default_display")
         box.operator("view.flat")
