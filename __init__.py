@@ -147,21 +147,19 @@ class ViewportPresets(bpy.types.Panel):
         
         row.label(text= "select a viewport preset to switch to")
         
-        row = layout.row()
-        row.operator("view.default_display")
-        row = layout.row()
-        row.operator("view.flat")
-        row = layout.row()
-        row.operator("view.random_color_display")
-        row = layout.row()
-        row.operator("view.material_previewer_display")
-        row = layout.row()
-        row.operator("view.maya_display")
-        row = layout.row()
-        row.operator("view.outline_display")
+        box = layout.box()
+        box.label(text= "basic viewports:")
+        box.operator("view.default_display")
+        box.operator("view.flat")
+        box.operator("view.random_color_display")
+        box.operator("view.maya_display")
+        box.operator("view.outline_display")
+        box = layout.box()
+        box.label(text= "render viewports:")
+        box.operator("view.material_previewer_display")
 
 classes = {
-    VP_DP_DEAFAULT, VP_DP_FLAT, VP_DP_RANDOMCOLOR, VP_DP_MAYA, VP_DP_OUTLINE
+    VP_DP_DEFAULT, VP_DP_FLAT, VP_DP_RANDOMCOLOR, VP_DP_MAYA, VP_DP_OUTLINE,
     VP_DP_MATERIALPREVIEWER,
     ViewportPresets
 }
