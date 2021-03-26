@@ -28,11 +28,9 @@ class VP_DP_DEFAULT(bpy.types.Operator):
         bpy.context.space_data.shading.show_cavity = True
         
         bpy.context.space_data.shading.cavity_type = 'WORLD'
-        bpy.context.space_data.shading.cavity_ridge_factor = 2.5
-        bpy.context.space_data.shading.cavity_valley_factor = 1
         
-        bpy.context.space_data.shading.curvature_ridge_factor = 0.5
-        bpy.context.space_data.shading.curvature_valley_factor = 0
+        bpy.context.space_data.shading.cavity_ridge_factor = context.scene.vp_props.Ridge
+        bpy.context.space_data.shading.cavity_valley_factor = context.scene.vp_props.Valley
         
         bpy.context.space_data.shading.show_object_outline = False
         return {'FINISHED'}
@@ -67,8 +65,9 @@ class VP_DP_RANDOMCOLOR(bpy.types.Operator):
         bpy.context.space_data.shading.show_cavity = True
         
         bpy.context.space_data.shading.cavity_type = 'WORLD'
-        bpy.context.space_data.shading.cavity_ridge_factor = 2.5
-        bpy.context.space_data.shading.cavity_valley_factor = 1
+        
+        bpy.context.space_data.shading.cavity_ridge_factor = context.scene.vp_props.Ridge
+        bpy.context.space_data.shading.cavity_valley_factor = context.scene.vp_props.Valley
         
         bpy.context.space_data.shading.curvature_ridge_factor = 0.5
         bpy.context.space_data.shading.curvature_valley_factor = 0
@@ -133,6 +132,10 @@ class VP_DP_OUTLINE(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class VP_Properties(bpy.types.PropertyGroup):
+    Valley = bpy.props.FloatProperty(name= "Valley", default= 1, min=0, max=2.5)
+    Ridge = bpy.props.FloatProperty(name= "Ridge", default= 2.5, min=0, max=2.5)
+
 class ViewportPresets(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
     bl_label = "Viewport Presets"
@@ -142,6 +145,7 @@ class ViewportPresets(bpy.types.Panel):
     bl_category = "Viewport presets"
     
     def draw(self, context):
+        scene = context.scene
         layout = self.layout
         
         row = layout.row()
@@ -150,6 +154,10 @@ class ViewportPresets(bpy.types.Panel):
         
         box = layout.box()
         box.label(text= "settings:")
+        box.prop(scene.vp_props, "Ridge")
+        box.prop(scene.vp_props, "Valley")
+        
+        box = layout.box()
         box.label(text= "basic viewports:")
         box.operator("view.default_display")
         box.operator("view.flat")
@@ -163,17 +171,20 @@ class ViewportPresets(bpy.types.Panel):
 classes = {
     VP_DP_DEFAULT, VP_DP_FLAT, VP_DP_RANDOMCOLOR, VP_DP_MAYA, VP_DP_OUTLINE,
     VP_DP_MATERIALPREVIEWER,
+    VP_Properties,
     ViewportPresets
 }
 
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+    bpy.types.Scene.vp_props = bpy.props.PointerProperty(type= VP_Properties)
 
 
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
+    del bpy.types.Scene.vp_props
 
 if __name__ == "__main__":
     register()
