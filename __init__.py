@@ -13,6 +13,7 @@ bl_info = {
 }
 
 
+# basic viewport
 class VP_DP_DEFAULT(bpy.types.Operator):
     bl_label = "default"
     bl_idname = "view.default_display"
@@ -159,25 +160,20 @@ class ViewportPresets(bpy.types.Panel):
         row = layout.row()
         row.operator("view.outline_display")
 
+classes = {
+    VP_DP_DEAFAULT, VP_DP_FLAT, VP_DP_RANDOMCOLOR, VP_DP_MAYA, VP_DP_OUTLINE
+    VP_DP_MATERIALPREVIEWER,
+    ViewportPresets
+}
 
 def register():
-    bpy.utils.register_class(VP_DP_DEFAULT)
-    bpy.utils.register_class(VP_DP_FLAT)
-    bpy.utils.register_class(VP_DP_RANDOMCOLOR)
-    bpy.utils.register_class(VP_DP_MATERIALPREVIEWER)
-    bpy.utils.register_class(VP_DP_MAYA)
-    bpy.utils.register_class(VP_DP_OUTLINE)
-    bpy.utils.register_class(ViewportPresets)
+    for cls in classes:
+        bpy.utils.register_class(cls)
 
 
 def unregister():
-    bpy.utils.unregister_class(VP_DP_DEFAULT)
-    bpy.utils.unregister_class(VP_DP_FLAT)
-    bpy.utils.unregister_class(VP_DP_RANDOMCOLOR)
-    bpy.utils.unregister_class(VP_DP_MATERIALPREVIEWER)
-    bpy.utils.unregister_class(VP_DP_MAYA)
-    bpy.utils.unregister_class(VP_DP_OUTLINE)
-    bpy.utils.unregister_class(ViewportPresets)
+    for cls in classes:
+        bpy.utils.unregister_class(cls)
 
 if __name__ == "__main__":
     register()
