@@ -256,26 +256,35 @@ class render_exr(bpy.types.Panel):
         row = layout.row()
         row.operator("render.render")
 
-classes = {
+operators = {
     VPM_DP_DEFAULT, VPM_DP_FLAT, VPM_DP_RANDOMCOLOR, VPM_DP_MAYA, VPM_DP_OUTLINE,
-    VPM_DP_MATERIALPREVIEWER,
-    
-    VPM_OP_EXR_RENDER_SETTINGS,
-    VPM_Properties,
-    
+    VPM_DP_MATERIALPREVIEWER, VPM_OP_EXR_RENDER_SETTINGS
+}
+subPanels = {
     VPM_PRESETS, render_exr
 }
 
 def register():
     bpy.utils.register_class(ViewportManager)
-    for cls in classes:
+    bpy.utils.register_class(VPM_Properties)
+    
+    for cls in operators:
         bpy.utils.register_class(cls)
+    for cls in subPanels:
+        bpy.utils.register_class(cls)
+    
     bpy.types.Scene.VPM_props = bpy.props.PointerProperty(type= VPM_Properties)
 
 
 def unregister():
-    for cls in classes:
+    bpy.utils.unregister_class(ViewportManager)
+    bpy.utils.unregister_class(VPM_Properties)
+    
+    for cls in operators:
         bpy.utils.unregister_class(cls)
+    for cls in subPanels:
+        bpy.utils.unregister_class(cls)
+    
     del bpy.types.Scene.VPM_props
 
 if __name__ == "__main__":
