@@ -18,7 +18,17 @@ class data:
 
 
 
-# basic viewport
+# operators
+
+class VPM_OP_EXR_RENDER_SETTINGS(bpy.types.Operator):
+    bl_idname = "vpm.exr_render_settings"
+    bl_label = "setup exr rendering"
+    
+    def execute(self, context):
+        bpy.context.scene.render.image_settings.file_format = 'OPEN_EXR'
+        
+        return {'FINISHED'}
+
 class VPM_DP_DEFAULT(bpy.types.Operator):
     bl_label = "default"
     bl_idname = "view.default_display"
@@ -147,6 +157,12 @@ class VPM_DP_OUTLINE(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
+
+
+
+
+# the addons needed properties
 class VPM_Properties(bpy.types.PropertyGroup):
     Valley = bpy.props.FloatProperty(name= "Valley", default= 1, min=0, max=2.5)
     Ridge = bpy.props.FloatProperty(name= "Ridge", default= 2.5, min=0, max=2.5)
@@ -156,9 +172,15 @@ class VPM_Properties(bpy.types.PropertyGroup):
     OutlineLightObjects = bpy.props.BoolProperty(name= "specular shading", default= False)
 
 
+
+
+
+
+
+
 class ViewportManager(bpy.types.Panel):
     bl_label = "Viewport Manager"
-    bl_idname = "VIEWPORT_MANAGER"
+    bl_idname = "viewport_manager"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Viewport Manager"
@@ -173,10 +195,10 @@ class ViewportManager(bpy.types.Panel):
 class VPM_PRESETS(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
     bl_label = "Presets"
-    bl_parent_id = "VIEWPORT_MANAGER"
+    bl_parent_id = "viewport_manager"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "VIEWPORT_MANAGER"
+    bl_context = "viewport_manager"
     
     def draw(self, context):
         scene = context.scene
@@ -218,29 +240,34 @@ class VPM_PRESETS(bpy.types.Panel):
         
         layout.label(text= "current display: " + str(data.currentViewport))
 
-class basic_viewports(bpy.types.Panel):
-    bl_parent_id = "VIEWPORT_PRESETS"
-    bl_idname = "VPM_sub"
-    bl_label = "sub"
+class render_exr(bpy.types.Panel):
+    bl_label = "render MatCap"
+    bl_parent_id = "viewport_manager"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "VIEWPORT_PRESETS"
+    bl_context = "viewport_manager"
     
     def draw(self, context):
         scene = context.scene
         layout = self.layout
         
         row = layout.row()
-        row.operator("view.outline_display")
+        row.operator("vpm.exr_render_settings")
+        row = layout.row()
+        row.operator("render.render")
 
 classes = {
     VPM_DP_DEFAULT, VPM_DP_FLAT, VPM_DP_RANDOMCOLOR, VPM_DP_MAYA, VPM_DP_OUTLINE,
     VPM_DP_MATERIALPREVIEWER,
+    
+    VPM_OP_EXR_RENDER_SETTINGS,
     VPM_Properties,
-    ViewportManager, VPM_PRESETS
+    
+    VPM_PRESETS, render_exr
 }
 
 def register():
+    bpy.utils.register_class(ViewportManager)
     for cls in classes:
         bpy.utils.register_class(cls)
     bpy.types.Scene.VPM_props = bpy.props.PointerProperty(type= VPM_Properties)
