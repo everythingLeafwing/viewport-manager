@@ -203,12 +203,26 @@ class ViewportPresets(bpy.types.Panel):
         
         layout.label(text= "current display: " + str(data.currentViewport))
 
+class subPanel(bpy.types.Panel):
+    bl_parent_id = "VIEWPORT_PRESETS"
+    bl_idname = "VP_sub"
+    bl_label = "sub"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "VIEWPORT_PRESETS"
+    
+    def draw(self, context):
+        scene = context.scene
+        layout = self.layout
+        
+        row = layout.row()
+        row.operator("view.outline_display")
 
 classes = {
     VP_DP_DEFAULT, VP_DP_FLAT, VP_DP_RANDOMCOLOR, VP_DP_MAYA, VP_DP_OUTLINE,
     VP_DP_MATERIALPREVIEWER,
     VP_Properties,
-    ViewportPresets
+    ViewportPresets, subPanel
 }
 
 def register():
