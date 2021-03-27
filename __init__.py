@@ -196,6 +196,7 @@ class VPM_PRESETS(bpy.types.Panel):
     """Creates a Panel in the Object properties window"""
     bl_label = "Presets"
     bl_parent_id = "viewport_manager"
+    bl_idname = "vm_viewport_presets"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_context = "viewport_manager"
@@ -205,8 +206,6 @@ class VPM_PRESETS(bpy.types.Panel):
         layout = self.layout
         
         row = layout.row()
-        
-        row.label(text= "select a viewport preset to switch to")
         
         box = layout.box()
         box.label(text= "settings:")
@@ -227,18 +226,40 @@ class VPM_PRESETS(bpy.types.Panel):
             bpy.context.space_data.shading.single_color = scene.VPM_props.OutlineObjectColor
             bpy.context.space_data.shading.object_outline_color = scene.VPM_props.OutlineColor
         
-        box = layout.box()
-        box.label(text= "basic viewports:")
-        box.operator("view.default_display")
-        box.operator("view.flat")
-        box.operator("view.random_color_display")
-        box.operator("view.maya_display")
-        box.operator("view.outline_display")
-        box = layout.box()
-        box.label(text= "render viewports:")
-        box.operator("view.material_previewer_display")
-        
         layout.label(text= "current display: " + str(data.currentViewport))
+
+class basicPresets(bpy.types.Panel):
+    bl_idname = "vm_basic_viewport_presets"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_parent_id = "vm_viewport_presets"
+    bl_context = "vm_viewport_presets"
+    bl_label = "basic viewports"
+    
+    def draw(self, context):
+        scene = context.scene
+        layout = self.layout
+        
+        layout.row().operator("view.default_display")
+        layout.row().operator("view.flat")
+        layout.row().operator("view.random_color_display")
+        layout.row().operator("view.maya_display")
+        layout.row().operator("view.outline_display")
+
+class renderPresets(bpy.types.Panel):
+    bl_idname = "vm_render_viewport_presets"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_parent_id = "vm_viewport_presets"
+    bl_context = "vm_viewport_presets"
+    bl_label = "render viewports"
+    
+    def draw(self, context):
+        scene = context.scene
+        layout = self.layout
+        
+        layout.row().operator("view.material_previewer_display")
+
 
 class render_exr(bpy.types.Panel):
     bl_label = "render MatCap"
@@ -263,6 +284,9 @@ operators = {
 subPanels = {
     VPM_PRESETS, render_exr
 }
+presetTypes = {
+    basicPresets, renderPresets
+}
 
 def register():
     bpy.utils.register_class(ViewportManager)
@@ -271,6 +295,8 @@ def register():
     for cls in operators:
         bpy.utils.register_class(cls)
     for cls in subPanels:
+        bpy.utils.register_class(cls)
+    for cls in presetTypes:
         bpy.utils.register_class(cls)
     
     bpy.types.Scene.VPM_props = bpy.props.PointerProperty(type= VPM_Properties)
@@ -283,6 +309,8 @@ def unregister():
     for cls in operators:
         bpy.utils.unregister_class(cls)
     for cls in subPanels:
+        bpy.utils.unregister_class(cls)
+    for cls in presetTypes:
         bpy.utils.unregister_class(cls)
     
     del bpy.types.Scene.VPM_props
