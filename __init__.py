@@ -19,7 +19,7 @@ class data:
 
 
 # basic viewport
-class VP_DP_DEFAULT(bpy.types.Operator):
+class VPM_DP_DEFAULT(bpy.types.Operator):
     bl_label = "default"
     bl_idname = "view.default_display"
     
@@ -35,13 +35,13 @@ class VP_DP_DEFAULT(bpy.types.Operator):
         
         bpy.context.space_data.shading.cavity_type = 'WORLD'
         
-        bpy.context.space_data.shading.cavity_ridge_factor = context.scene.vp_props.Ridge
-        bpy.context.space_data.shading.cavity_valley_factor = context.scene.vp_props.Valley
+        bpy.context.space_data.shading.cavity_ridge_factor = context.scene.VPM_props.Ridge
+        bpy.context.space_data.shading.cavity_valley_factor = context.scene.VPM_props.Valley
         
         bpy.context.space_data.shading.show_object_outline = False
         return {'FINISHED'}
 
-class VP_DP_FLAT(bpy.types.Operator):
+class VPM_DP_FLAT(bpy.types.Operator):
     bl_label = "flat"
     bl_idname = "view.flat"
     
@@ -58,7 +58,7 @@ class VP_DP_FLAT(bpy.types.Operator):
         bpy.context.space_data.shading.show_object_outline = False
         return {'FINISHED'}
 
-class VP_DP_RANDOMCOLOR(bpy.types.Operator):
+class VPM_DP_RANDOMCOLOR(bpy.types.Operator):
     bl_label = "random color"
     bl_idname = "view.random_color_display"
     
@@ -74,8 +74,8 @@ class VP_DP_RANDOMCOLOR(bpy.types.Operator):
         
         bpy.context.space_data.shading.cavity_type = 'WORLD'
         
-        bpy.context.space_data.shading.cavity_ridge_factor = context.scene.vp_props.Ridge
-        bpy.context.space_data.shading.cavity_valley_factor = context.scene.vp_props.Valley
+        bpy.context.space_data.shading.cavity_ridge_factor = context.scene.VPM_props.Ridge
+        bpy.context.space_data.shading.cavity_valley_factor = context.scene.VPM_props.Valley
         
         bpy.context.space_data.shading.curvature_ridge_factor = 0.5
         bpy.context.space_data.shading.curvature_valley_factor = 0
@@ -84,7 +84,7 @@ class VP_DP_RANDOMCOLOR(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class VP_DP_MATERIALPREVIEWER(bpy.types.Operator):
+class VPM_DP_MATERIALPREVIEWER(bpy.types.Operator):
     bl_label = "material previewer"
     bl_idname = "view.material_previewer_display"
     
@@ -99,7 +99,7 @@ class VP_DP_MATERIALPREVIEWER(bpy.types.Operator):
         
         return {'FINISHED'}
 
-class VP_DP_MAYA(bpy.types.Operator):
+class VPM_DP_MAYA(bpy.types.Operator):
     bl_label = "maya"
     bl_idname = "view.maya_display"
     
@@ -120,7 +120,7 @@ class VP_DP_MAYA(bpy.types.Operator):
         
         return {'FINISHED'}
 
-class VP_DP_OUTLINE(bpy.types.Operator):
+class VPM_DP_OUTLINE(bpy.types.Operator):
     bl_label = "outline"
     bl_idname = "view.outline_display"
     
@@ -138,16 +138,16 @@ class VP_DP_OUTLINE(bpy.types.Operator):
         bpy.context.space_data.shading.color_type = 'SINGLE'
         
         bpy.context.space_data.shading.show_object_outline = True
-        bpy.context.space_data.shading.show_specular_highlight = scene.vp_props.OutlineLightObjects
+        bpy.context.space_data.shading.show_specular_highlight = scene.VPM_props.OutlineLightObjects
             
-        bpy.context.space_data.shading.show_specular_highlight = scene.vp_props.OutlineLightObjects
-        bpy.context.space_data.shading.single_color = scene.vp_props.OutlineObjectColor
-        bpy.context.space_data.shading.object_outline_color = scene.vp_props.OutlineColor
+        bpy.context.space_data.shading.show_specular_highlight = scene.VPM_props.OutlineLightObjects
+        bpy.context.space_data.shading.single_color = scene.VPM_props.OutlineObjectColor
+        bpy.context.space_data.shading.object_outline_color = scene.VPM_props.OutlineColor
         
         return {'FINISHED'}
 
 
-class VP_Properties(bpy.types.PropertyGroup):
+class VPM_Properties(bpy.types.PropertyGroup):
     Valley = bpy.props.FloatProperty(name= "Valley", default= 1, min=0, max=2.5)
     Ridge = bpy.props.FloatProperty(name= "Ridge", default= 2.5, min=0, max=2.5)
     
@@ -155,13 +155,28 @@ class VP_Properties(bpy.types.PropertyGroup):
     OutlineColor = bpy.props.FloatVectorProperty(name= "Outline Color", default= [1, 1, 1], subtype="COLOR")
     OutlineLightObjects = bpy.props.BoolProperty(name= "specular shading", default= False)
 
-class ViewportPresets(bpy.types.Panel):
-    """Creates a Panel in the Object properties window"""
-    bl_label = "Viewport Presets"
-    bl_idname = "VIEWPORT_PRESETS"
+
+class ViewportManager(bpy.types.Panel):
+    bl_label = "Viewport Manager"
+    bl_idname = "VIEWPORT_MANAGER"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "Viewport presets"
+    bl_category = "Viewport Manager"
+    
+    def draw(self, context):
+        scene = context.scene
+        layout = self.layout
+        
+        row = layout.row()
+        row.label(text= "viewport")
+
+class VPM_PRESETS(bpy.types.Panel):
+    """Creates a Panel in the Object properties window"""
+    bl_label = "Presets"
+    bl_parent_id = "VIEWPORT_MANAGER"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "VIEWPORT_MANAGER"
     
     def draw(self, context):
         scene = context.scene
@@ -175,20 +190,20 @@ class ViewportPresets(bpy.types.Panel):
         box.label(text= "settings:")
         
         if data.currentViewport == "random color" or data.currentViewport == "default":
-            box.prop(scene.vp_props, "Ridge")
-            box.prop(scene.vp_props, "Valley")
+            box.prop(scene.VPM_props, "Ridge")
+            box.prop(scene.VPM_props, "Valley")
         
-            bpy.context.space_data.shading.cavity_ridge_factor = context.scene.vp_props.Ridge
-            bpy.context.space_data.shading.cavity_valley_factor = context.scene.vp_props.Valley
+            bpy.context.space_data.shading.cavity_ridge_factor = context.scene.VPM_props.Ridge
+            bpy.context.space_data.shading.cavity_valley_factor = context.scene.VPM_props.Valley
         
         if data.currentViewport == "outline":
-            box.prop(scene.vp_props, "OutlineObjectColor")
-            box.prop(scene.vp_props, "OutlineColor")
-            box.prop(scene.vp_props, "OutlineLightObjects")
+            box.prop(scene.VPM_props, "OutlineObjectColor")
+            box.prop(scene.VPM_props, "OutlineColor")
+            box.prop(scene.VPM_props, "OutlineLightObjects")
             
-            bpy.context.space_data.shading.show_specular_highlight = scene.vp_props.OutlineLightObjects
-            bpy.context.space_data.shading.single_color = scene.vp_props.OutlineObjectColor
-            bpy.context.space_data.shading.object_outline_color = scene.vp_props.OutlineColor
+            bpy.context.space_data.shading.show_specular_highlight = scene.VPM_props.OutlineLightObjects
+            bpy.context.space_data.shading.single_color = scene.VPM_props.OutlineObjectColor
+            bpy.context.space_data.shading.object_outline_color = scene.VPM_props.OutlineColor
         
         box = layout.box()
         box.label(text= "basic viewports:")
@@ -203,9 +218,9 @@ class ViewportPresets(bpy.types.Panel):
         
         layout.label(text= "current display: " + str(data.currentViewport))
 
-class subPanel(bpy.types.Panel):
+class basic_viewports(bpy.types.Panel):
     bl_parent_id = "VIEWPORT_PRESETS"
-    bl_idname = "VP_sub"
+    bl_idname = "VPM_sub"
     bl_label = "sub"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -219,22 +234,22 @@ class subPanel(bpy.types.Panel):
         row.operator("view.outline_display")
 
 classes = {
-    VP_DP_DEFAULT, VP_DP_FLAT, VP_DP_RANDOMCOLOR, VP_DP_MAYA, VP_DP_OUTLINE,
-    VP_DP_MATERIALPREVIEWER,
-    VP_Properties,
-    ViewportPresets, subPanel
+    VPM_DP_DEFAULT, VPM_DP_FLAT, VPM_DP_RANDOMCOLOR, VPM_DP_MAYA, VPM_DP_OUTLINE,
+    VPM_DP_MATERIALPREVIEWER,
+    VPM_Properties,
+    ViewportManager, VPM_PRESETS
 }
 
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-    bpy.types.Scene.vp_props = bpy.props.PointerProperty(type= VP_Properties)
+    bpy.types.Scene.VPM_props = bpy.props.PointerProperty(type= VPM_Properties)
 
 
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
-    del bpy.types.Scene.vp_props
+    del bpy.types.Scene.VPM_props
 
 if __name__ == "__main__":
     register()
