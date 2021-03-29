@@ -1,22 +1,32 @@
-"preset": {
-    "viewport": "solid"
-    "lighting": {
-        "type": "studio"
-        "lighting file": "basic"
-    }
-    "color": "object"
-    "background": "theme"
-    "backface culling": false
-    "x-ray": {
-        "enabled": false
-        "factor": 1.0
-    }
-    "shadow": {
-        "enabled": false
-        "opacity": 0.0
-        "settings": {
-            "shift": 0
-            "force": 5
-        }
+{
+    "preset": {
+        "viewport": "solid",
+        "lighting": {
+            "type": "studio",
+            "lighting file": "basic",
+            "world space lighting": {
+                "enabled": false
+            }
+        },
+        "color": "object",
+        "background": "theme",
+        "backface culling": false,
+        "x-ray": {
+            "enabled": false
+        },
+        "shadow": {
+            "enabled": false
+        },
+        "cavity": {
+            "enabled": true,
+            "type": "world",
+            "ridge": "${BindValue: RIDGE}",
+            "valley": "${BindValue: VALLEY}"
+        },
+        "depth of field": false,
+        "outline": {
+            "enabled": false
+        },
+        "specular lighting": false
     }
 }
