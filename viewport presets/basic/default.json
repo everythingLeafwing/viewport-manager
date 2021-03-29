@@ -1,0 +1,22 @@
+"preset": {
+    "viewport": "solid"
+    "lighting": {
+        "type": "studio"
+        "lighting file": "basic"
+    }
+    "color": "object"
+    "background": "theme"
+    "backface culling": false
+    "x-ray": {
+        "enabled": false
+        "factor": 1.0
+    }
+    "shadow": {
+        "enabled": false
+        "opacity": 0.0
+        "settings": {
+            "shift": 0
+            "force": 5
+        }
+    }
+}
