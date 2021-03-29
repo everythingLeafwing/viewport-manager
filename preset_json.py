@@ -1,12 +1,12 @@
 import json
+import bpy
 
 
-def loadFile(location):
-    with open('data.txt') as json_file:
-        data = json.load(json_file)
-        for p in data['people']:
-            print('Name: ' + p['name'])
-            print('Website: ' + p['website'])
-            print('From: ' + p['from'])
-            print('')
-
+def loadPreset(location):
+    with open(location) as json_file:
+        data = json.load(json_file)["presets"]
+        
+        with lighting as data["lighting"]:
+            if lighting["type"] == "studio":
+                bpy.context.space_data.shading.light = 'STUDIO'
+                if lighting["lighting file"] == "basic"
