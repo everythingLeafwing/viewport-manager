@@ -49,10 +49,25 @@ class VPM_OP_EXR_RENDER_SETTINGS(bpy.types.Operator):
 # FORGET THE JSON
 # DO IT LIKE THIS
 
-class default(bpy.types.operator):
+### presets: (write any added ones here too)
+#
+## solid
+#
+# default
+# flat
+# random color
+# maya
+# outline
+#
+## render viewports
+# material previewer
+
+class default(bpy.types.Operator):
         data_name = "default"
+        bl_label = "default"
+        bl_idname = "vpm.default_preset"
         
-        def execute():
+        def execute(self, context):
             data.currentViewport = "default"
             
             # lighting
@@ -80,134 +95,9 @@ class default(bpy.types.operator):
 
 
 
-basic = [
+solidViewPresets = [
     default
 ]
-
-# ---------------------------------- preset operators ----------------------------------
-
-class VPM_DP_DEFAULT(bpy.types.Operator):
-    bl_label = "default"
-    bl_idname = "view.default_display"
-    
-    def execute(self, context):
-        data.currentViewport = "default"
-        
-        # do absolutely nothing
-        # someone has to fix this
-        
-        return {'FINISHED'}
-
-class VPM_DP_FLAT(bpy.types.Operator):
-    bl_label = "flat"
-    bl_idname = "view.flat"
-    
-    def execute(self, context):
-        data.currentViewport = "flat"
-        
-        bpy.context.space_data.shading.type = 'SOLID'
-        
-        bpy.context.space_data.shading.color_type = 'OBJECT'
-        bpy.context.space_data.shading.background_type = 'THEME'
-        
-        bpy.context.space_data.shading.show_cavity = False
-        
-        bpy.context.space_data.shading.show_object_outline = False
-        return {'FINISHED'}
-
-class VPM_DP_RANDOMCOLOR(bpy.types.Operator):
-    bl_label = "random color"
-    bl_idname = "view.random_color_display"
-    
-    def execute(self, context):
-        data.currentViewport = "random color"
-
-        bpy.context.space_data.shading.type = 'SOLID'
-
-        bpy.context.space_data.shading.color_type = 'RANDOM'
-        bpy.context.space_data.shading.background_type = 'THEME'
-        
-        bpy.context.space_data.shading.show_cavity = True
-        
-        bpy.context.space_data.shading.cavity_type = 'WORLD'
-        
-        bpy.context.space_data.shading.cavity_ridge_factor = context.scene.VPM_props.Ridge
-        bpy.context.space_data.shading.cavity_valley_factor = context.scene.VPM_props.Valley
-        
-        bpy.context.space_data.shading.curvature_ridge_factor = 0.5
-        bpy.context.space_data.shading.curvature_valley_factor = 0
-        
-        bpy.context.space_data.shading.show_object_outline = False
-        return {'FINISHED'}
-
-
-class VPM_DP_MATERIALPREVIEWER(bpy.types.Operator):
-    bl_label = "material previewer"
-    bl_idname = "view.material_previewer_display"
-    
-    def execute(self, context):
-        data.currentViewport = "material previewer"
-        
-        bpy.context.space_data.shading.type = 'MATERIAL'
-        
-        bpy.context.space_data.shading.studiolight_intensity = 1
-        bpy.context.space_data.shading.studiolight_background_alpha = 1
-        bpy.context.space_data.shading.studiolight_background_blur = 0
-        
-        return {'FINISHED'}
-
-class VPM_DP_MAYA(bpy.types.Operator):
-    bl_label = "maya"
-    bl_idname = "view.maya_display"
-    
-    def execute(self, context):
-        data.currentViewport = "maya"
-
-        bpy.context.space_data.shading.type = 'SOLID'
-
-        bpy.context.space_data.shading.color_type = 'SINGLE'
-        bpy.context.space_data.shading.background_type = 'THEME'
-        
-        bpy.context.space_data.shading.show_cavity = False
-        
-        bpy.context.space_data.shading.color_type = 'SINGLE'
-        bpy.context.space_data.shading.single_color = (0.595251, 0.75432, 0.8)
-        
-        bpy.context.space_data.shading.show_object_outline = False
-        
-        return {'FINISHED'}
-
-class VPM_DP_OUTLINE(bpy.types.Operator):
-    bl_label = "outline"
-    bl_idname = "view.outline_display"
-    
-    def execute(self, context):
-        scene = context.scene
-        data.currentViewport = "outline"
-
-        bpy.context.space_data.shading.type = 'SOLID'
-
-        bpy.context.space_data.shading.color_type = 'TEXTURE'
-        bpy.context.space_data.shading.background_type = 'THEME'
-        
-        bpy.context.space_data.shading.show_cavity = False
-        
-        bpy.context.space_data.shading.color_type = 'SINGLE'
-        
-        bpy.context.space_data.shading.show_object_outline = True
-        bpy.context.space_data.shading.show_specular_highlight = scene.VPM_props.OutlineLightObjects
-            
-        bpy.context.space_data.shading.show_specular_highlight = scene.VPM_props.OutlineLightObjects
-        bpy.context.space_data.shading.single_color = scene.VPM_props.OutlineObjectColor
-        bpy.context.space_data.shading.object_outline_color = scene.VPM_props.OutlineColor
-        
-        return {'FINISHED'}
-
-
-
-
-
-
 
 # the addons needed properties
 class VPM_Properties(bpy.types.PropertyGroup):
@@ -275,23 +165,23 @@ class VPM_PRESETS(bpy.types.Panel):
         
         layout.label(text= "current display: " + str(data.currentViewport))
 
-class basicPresets(bpy.types.Panel):
+class solidPresets(bpy.types.Panel):
     bl_idname = "vm_basic_viewport_presets"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_parent_id = "vm_viewport_presets"
     bl_context = "vm_viewport_presets"
-    bl_label = "basic viewports"
+    bl_label = "solid viewports"
     
     def draw(self, context):
         scene = context.scene
         layout = self.layout
         
-        layout.row().operator("view.default_display")
-        layout.row().operator("view.flat")
-        layout.row().operator("view.random_color_display")
-        layout.row().operator("view.maya_display")
-        layout.row().operator("view.outline_display")
+        for op in solidViewPresets:
+            layout.operator(op.bl_idname)
+            
+        
+        
 
 class renderPresets(bpy.types.Panel):
     bl_idname = "vm_render_viewport_presets"
@@ -304,8 +194,6 @@ class renderPresets(bpy.types.Panel):
     def draw(self, context):
         scene = context.scene
         layout = self.layout
-        
-        layout.row().operator("view.material_previewer_display")
 
 
 class render_exr(bpy.types.Panel):
@@ -324,23 +212,20 @@ class render_exr(bpy.types.Panel):
         row = layout.row()
         row.operator("render.render")
 
-operators = {
-    VPM_DP_DEFAULT, VPM_DP_FLAT, VPM_DP_RANDOMCOLOR, VPM_DP_MAYA, VPM_DP_OUTLINE,
-    VPM_DP_MATERIALPREVIEWER, VPM_OP_EXR_RENDER_SETTINGS
-}
 subPanels = {
     VPM_PRESETS, render_exr
 }
 presetTypes = {
-    basicPresets, renderPresets
+    solidPresets, renderPresets
 }
 
 def register():
     bpy.utils.register_class(ViewportManager)
     bpy.utils.register_class(VPM_Properties)
     
-    for cls in operators:
+    for cls in solidViewPresets:
         bpy.utils.register_class(cls)
+    
     for cls in subPanels:
         bpy.utils.register_class(cls)
     for cls in presetTypes:
@@ -353,8 +238,6 @@ def unregister():
     bpy.utils.unregister_class(ViewportManager)
     bpy.utils.unregister_class(VPM_Properties)
     
-    for cls in operators:
-        bpy.utils.unregister_class(cls)
     for cls in subPanels:
         bpy.utils.unregister_class(cls)
     for cls in presetTypes:
