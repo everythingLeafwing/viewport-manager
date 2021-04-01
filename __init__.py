@@ -47,6 +47,44 @@ class VPM_OP_EXR_RENDER_SETTINGS(bpy.types.Operator):
 # -------------------------------- presets ----------------------------------
 
 # FORGET THE JSON
+# DO IT LIKE THIS
+
+class default(bpy.types.operator):
+        data_name = "default"
+        
+        def execute():
+            data.currentViewport = "default"
+            
+            # lighting
+            bpy.context.space_data.shading.light = 'STUDIO'
+            bpy.context.space_data.shading.studio_light = 'Default'
+            bpy.context.space_data.shading.use_world_space_lighting = False
+            
+            # color and background
+            bpy.context.space_data.shading.color_type = 'MATERIAL'
+            bpy.context.space_data.shading.background_type = 'THEME'
+            
+            # options
+            bpy.context.space_data.shading.show_backface_culling = False
+            bpy.context.space_data.shading.show_xray = False
+            bpy.context.space_data.shading.show_shadows = False
+
+            # cavity
+            bpy.context.space_data.shading.show_cavity = True
+            bpy.context.space_data.shading.cavity_type = 'WORLD'
+            bpy.context.space_data.shading.cavity_ridge_factor = 2.5
+            
+            bpy.context.space_data.shading.use_dof = False
+            bpy.context.space_data.shading.show_object_outline = False
+            bpy.context.space_data.shading.show_specular_highlight = True
+
+
+
+basic = [
+    default
+]
+
+# ---------------------------------- preset operators ----------------------------------
 
 class VPM_DP_DEFAULT(bpy.types.Operator):
     bl_label = "default"
