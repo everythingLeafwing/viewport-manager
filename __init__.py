@@ -63,7 +63,6 @@ class VPM_OP_EXR_RENDER_SETTINGS(bpy.types.Operator):
 # material previewer
 
 class default(bpy.types.Operator):
-        data_name = "default"
         bl_label = "default"
         bl_idname = "vpm.default_preset"
         
@@ -92,11 +91,46 @@ class default(bpy.types.Operator):
             bpy.context.space_data.shading.use_dof = False
             bpy.context.space_data.shading.show_object_outline = False
             bpy.context.space_data.shading.show_specular_highlight = True
+            
+            return {'FINISHED'}
+
+class random(bpy.types.Operator):
+        bl_label = "random"
+        bl_idname = "vpm.random_preset"
+        
+        def execute(self, context):
+            data.currentViewport = "random"
+            
+            # lighting
+            bpy.context.space_data.shading.light = 'STUDIO'
+            bpy.context.space_data.shading.studio_light = 'Default'
+            bpy.context.space_data.shading.use_world_space_lighting = False
+            
+            # color and background
+            bpy.context.space_data.shading.color_type = 'RANDOM'
+            bpy.context.space_data.shading.background_type = 'THEME'
+            
+            # options
+            bpy.context.space_data.shading.show_backface_culling = False
+            bpy.context.space_data.shading.show_xray = False
+            bpy.context.space_data.shading.show_shadows = False
+
+            # cavity
+            bpy.context.space_data.shading.show_cavity = True
+            bpy.context.space_data.shading.cavity_type = 'WORLD'
+            bpy.context.space_data.shading.cavity_ridge_factor = 2.5
+            
+            bpy.context.space_data.shading.use_dof = False
+            bpy.context.space_data.shading.show_object_outline = False
+            bpy.context.space_data.shading.show_specular_highlight = True
+            
+            return {'FINISHED'}
 
 
 
 solidViewPresets = [
-    default
+    default,
+    random
 ]
 
 # the addons needed properties
