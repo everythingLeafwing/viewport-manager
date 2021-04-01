@@ -1,16 +1,30 @@
+# I'm not dealing with separate files in an add-on
+# every file is seperated like this
+#---------------------------------- filename ---------------------------------
+# NEVER IMPORT MODULES TWICE
+
+
+# MODULES FOR ENTIRE ADDON GO HERE
+# --------------------------------- modules ----------------------------------------
 import bpy
+
+
+# ------------------------------- add-on data ---------------------------------------
 
 bl_info = {
     "name": "Viewport Presets",
     "author": "EverythingLeafwing",
     "version": (1, 0),
     "blender": (2, 80, 0),
-    "location": "View3D > Viewport Presets",
-    "description": "Adds viewport presets",
+    "location": "View3D > Viewport Manager",
+    "description": "helps you manage the viewport",
     "warning": "",
     "doc_url": "",
     "category": "View",
 }
+
+
+# --------------------------------- global data ------------------------------------
 
 
 class data:
@@ -18,7 +32,7 @@ class data:
 
 
 
-# operators
+# -------------------------------- exr render stuff ----------------------------------
 
 class VPM_OP_EXR_RENDER_SETTINGS(bpy.types.Operator):
     bl_idname = "vpm.exr_render_settings"
@@ -29,6 +43,11 @@ class VPM_OP_EXR_RENDER_SETTINGS(bpy.types.Operator):
         
         return {'FINISHED'}
 
+
+# -------------------------------- presets ----------------------------------
+
+# FORGET THE JSON
+
 class VPM_DP_DEFAULT(bpy.types.Operator):
     bl_label = "default"
     bl_idname = "view.default_display"
@@ -36,19 +55,9 @@ class VPM_DP_DEFAULT(bpy.types.Operator):
     def execute(self, context):
         data.currentViewport = "default"
         
-        bpy.context.space_data.shading.type = 'SOLID'
+        # do absolutely nothing
+        # someone has to fix this
         
-        bpy.context.space_data.shading.color_type = 'OBJECT'
-        bpy.context.space_data.shading.background_type = 'THEME'
-        
-        bpy.context.space_data.shading.show_cavity = True
-        
-        bpy.context.space_data.shading.cavity_type = 'WORLD'
-        
-        bpy.context.space_data.shading.cavity_ridge_factor = context.scene.VPM_props.Ridge
-        bpy.context.space_data.shading.cavity_valley_factor = context.scene.VPM_props.Valley
-        
-        bpy.context.space_data.shading.show_object_outline = False
         return {'FINISHED'}
 
 class VPM_DP_FLAT(bpy.types.Operator):
